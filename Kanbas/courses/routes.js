@@ -1,5 +1,9 @@
+
 import Database from "../Database/index.js";
-export default function CourseRoutes(app) {
+import courses from "../Database/courses.js";
+import db from "../Database/index.js";
+
+export default function Courses(app) {
     app.get("/api/courses/:id", (req, res) => {
         const { id } = req.params;
         const course = Database.courses
