@@ -1,4 +1,3 @@
-
 import Database from "../Database/index.js";
 import courses from "../Database/courses.js";
 import db from "../Database/index.js";

@@ -1,3 +1,4 @@
+
 export default function SecurityController(app) {
     app.get("/api/session/set/:key/:value", (req, res) => {
         const key = req.params.key;

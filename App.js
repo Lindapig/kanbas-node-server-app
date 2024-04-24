@@ -1,26 +1,23 @@
 import "dotenv/config";
 import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import session from "express-session";
+
+// Route imports
 import Hello from "./Hi.js";
 import Courses from './Courses/routes.js';
 import ModuleRoutes from './Kanbas/modules/routes.js';
-import cors from "cors";
-import Lab5 from "./Lab5.js";
+import Lab5 from "./Lab.js";
 import Assignments from "./Kanbas/assignments/routes.js";
-import session from "express-session";
 import SessionExercises from "./SessionExercises.js";
-// import SecurityController from "./SecurityController.js";
-// import UserRoutes from "./Kanbas/users/routes.js";
 import Users from "./users/routes.js";
-import mongoose from "mongoose";
 
-// mongoose.connect("mongodb://local127.0.0.1:27017/Kanbas");
-// mongoose.connect("mongodb://127.0.0.1:27017/Kanbas");
-
+// // Database connection
 const CONNECTION_STRING = process.env.DB_CONNECTION_STRING;
-console.log(CONNECTION_STRING);
 mongoose.connect(CONNECTION_STRING);
 const app = express();
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 const sessionOptions = {
     secret: "some secret",
     saveUninitialized: false,
@@ -28,7 +25,7 @@ const sessionOptions = {
 };
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,
+        origin: "http://localhost:3000",
         credentials: true,
     })
 );
@@ -41,25 +38,53 @@ if (process.env.NODE_ENV !== "development") {
 }
 
 app.use(session(sessionOptions));
+app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
 
+// // Configure CORS with specific settings
+// app.use(cors({
+//   credentials: true,
+//   origin: "http://localhost:3000" // Ensure FRONTEND_URL is correctly set in .env
+// }));
+// app.use(express.json());
 // app.use(
 //   session({
-//     secret: "secret",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: false },
+//     secret: "keyboard cat",
 //   })
 // );
+// // Configure session with specific options
+// const sessionOptions = {
+//   secret: "any string",
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {}
+// };
 
+// if (process.env.NODE_ENV !== "development") {
+//   sessionOptions.proxy = true;
+//   sessionOptions.cookie.sameSite = "none";
+//   sessionOptions.cookie.secure = true;
+//   sessionOptions.cookie.domain = process.env.HTTP_SERVER_DOMAIN;
+// }
+
+// app.use(session(sessionOptions));
+// app.use(cors());
+// app.use(express.json());
+// !!These two are very important, if I delete them, I can work locally.
+// Register routes
 Lab5(app);
 Hello(app);
-Courses(app);
+// Courses(app);
 ModuleRoutes(app);
-// SecurityController(app);
 Assignments(app);
-SessionExercises(app);
+// SessionExercises(app);
 Users(app);
+
+// // Start server
+// const port = process.env.PORT || 4000;
+// // app.listen(port, () => {
+// //   console.log(`Server is running on port ${port}`);
+// // });
 const port = process.env.PORT || 4000;
 app.listen(port);
-// app.listen(4000);
-// app.listen(process.env.PORT || 4000);
